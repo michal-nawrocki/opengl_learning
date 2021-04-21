@@ -1,4 +1,7 @@
 #include <stdio.h>
+#include <string>
+#include <fstream>
+#include <iostream>
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -25,6 +28,13 @@ const char* fragment_shader =
     "void main (){"
     "   frag_colour = vec4(0.5, 0.0, 0.5, 1.0);"
     "}";
+
+std::string read_shader_program(std::string filepath){
+    std::ifstream file_stream(filepath);
+    std::string shader_program((std::istreambuf_iterator<char>(file_stream)), std::istreambuf_iterator<char>());
+
+    return shader_program;
+}
 
 int main(){
     // Initialise GLFW
