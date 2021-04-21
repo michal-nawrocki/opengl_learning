@@ -1,4 +1,4 @@
-BIN = main
+BIN = main.o
 CC = g++
 FLAGS = -Wall -pedantic -Wextra
 INC = -I ../common/include -I/sw/include -I/usr/local/include
