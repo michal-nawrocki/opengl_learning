@@ -9,9 +9,14 @@
 
 // Set Triangle coordinates
 GLfloat points[] = {
-    0.0f, 0.5f, 0.0f,
+    -0.5f, -0.5f, 0.0f,
     0.5f, -0.5f, 0.0f,
-    -0.5f, -0.5f, 0.0f
+    -0.5f, 0.5f, 0.0f,
+
+    -0.5f, 0.5f, 0.0f,
+    0.5f, 0.5f, 0.0f,
+    0.5f, -0.5f, 0.0f,
+
 };
 
 // Util tool for reading shader programs
@@ -102,7 +107,7 @@ int main(){
 
         // Specify the bounds and draw
         glBindVertexArray(vao);
-        glDrawArrays(GL_TRIANGLES, 0, 3);
+        glDrawArrays(GL_TRIANGLES, 0, sizeof(points)/3);
 
         // Fetch input events
         glfwPollEvents();
