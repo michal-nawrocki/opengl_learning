@@ -34,7 +34,6 @@ bool restart_gl_log(){
 
     // IO cleanup
     fclose(log_file);
-
     return true;
 }
 
@@ -64,9 +63,7 @@ bool gl_log(std::string message, ...){
     
     // Cleanup IO
     fclose(file);
-
     return true;
-
 }
 
 bool gl_log_error(std::string message, ...){
@@ -102,7 +99,6 @@ bool gl_log_error(std::string message, ...){
     // IO cleanup
     va_end(arguments);
     fclose(file);
-
     return true;
 }
 
@@ -172,5 +168,4 @@ int main(){
     // Cleanup and exit
     glfwTerminate();
     return 0;
-
 }
