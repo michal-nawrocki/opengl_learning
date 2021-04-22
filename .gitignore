@@ -1,5 +1,12 @@
+#### My Additions ###
+
 # VSCode
 .vscode/
+
+# logs
+*.log
+
+### end ###
 
 # Prerequisites
 *.d
