@@ -14,26 +14,10 @@ GLfloat points[] = {
     -0.5f, -0.5f, 0.0f
 };
 
-// Shader programs
-const char* vertex_shader = 
-    "#version 400\n"
-    "in vec3 vp;"
-    "void main (){"
-    "   gl_Position = vec4(vp, 1.0);"
-    "}";
-
-const char* fragment_shader =
-    "#version 400\n"
-    "out vec4 frag_colour;"
-    "void main (){"
-    "   frag_colour = vec4(0.5, 0.0, 0.5, 1.0);"
-    "}";
-
-std::string read_shader_program(std::string filepath){
+// Util tool for reading shader programs
+std::string* read_shader_program(std::string filepath){
     std::ifstream file_stream(filepath);
-    std::string shader_program((std::istreambuf_iterator<char>(file_stream)), std::istreambuf_iterator<char>());
-
-    return shader_program;
+    return new std::string(std::istreambuf_iterator<char>(file_stream), std::istreambuf_iterator<char>());
 }
 
 int main(){
@@ -44,10 +28,12 @@ int main(){
     }
 
     // Something nice for MacOS that will be explained later
+    #ifdef __APPLE__
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 2);
     glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    #endif
 
     GLFWwindow* window  = glfwCreateWindow(640, 480, "Hello Triangle", NULL, NULL);
     if(!window){
@@ -88,10 +74,12 @@ int main(){
 
     // Load Shaders
     GLuint vs = glCreateShader(GL_VERTEX_SHADER);
+    const char* vertex_shader = read_shader_program("shaders/test.vert")->c_str();
     glShaderSource(vs, 1, &vertex_shader, NULL);
     glCompileShader(vs);
 
     GLuint fs = glCreateShader(GL_FRAGMENT_SHADER);
+    const char* fragment_shader = read_shader_program("shaders/test.frag")->c_str();
     glShaderSource(fs, 1, &fragment_shader, NULL);
     glCompileShader(fs);
 
