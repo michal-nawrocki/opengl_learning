@@ -10,6 +10,11 @@
 
 #define GL_LOG_FILE "gl.log"
 
+// ######## global vars ###########
+int g_gl_width = 640;
+int g_gl_height = 480;
+// ################################
+
 // Set Triangle coordinates
 GLfloat points[] = {
     -0.5f, -0.5f, 0.0f,
@@ -125,6 +130,16 @@ void glfw_error_callback(int error, const char* description){
     gl_log_error("GLFW Error: code %i msg: %s\n", error, description);
 }
 
+void glfw_window_size_callback(GLFWwindow* window, int width, int height){
+    g_gl_width = width;
+    g_gl_height = height;
+
+    fprintf(stdout, "Width: %d\n Height: %d\n", width, height);
+    /*  TODO:
+    *   Update any perspective matiricies here
+    */
+}
+
 int main(){
     // Assert logging works and initialise log file
     assert(restart_gl_log());
@@ -153,16 +168,20 @@ int main(){
         video_mode->width,
         video_mode->height,
         "Hello Triangle",
-        monitor,
+        NULL,
         NULL
     );
     if(!window){
         fprintf(stderr, "ERROR: could not open window with GLFW3\n");
         glfwTerminate();
         return 1;
-    }else{
-        glfwMakeContextCurrent(window);
     }
+
+    // Set context to this window
+    glfwMakeContextCurrent(window);
+
+    // Setup windows size callback
+    glfwSetWindowSizeCallback(window, glfw_window_size_callback);
 
     // GLEW extension handling
     glewExperimental = GL_TRUE;
@@ -213,7 +232,8 @@ int main(){
     while(!glfwWindowShouldClose(window)){
         // Clear draw surface
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-        
+        glViewport(0, 0, g_gl_width, g_gl_width);
+
         // Set background color to grey
         glClearColor(0.5, 0.5, 0.5, 1.0);
 
