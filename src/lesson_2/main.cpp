@@ -140,6 +140,55 @@ void glfw_window_size_callback(GLFWwindow* window, int width, int height){
     */
 }
 
+void log_gl_params(){
+    GLenum params[] = {
+        GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS,
+        GL_MAX_CUBE_MAP_TEXTURE_SIZE,
+        GL_MAX_DRAW_BUFFERS,
+        GL_MAX_FRAGMENT_UNIFORM_COMPONENTS,
+        GL_MAX_TEXTURE_IMAGE_UNITS,
+        GL_MAX_TEXTURE_SIZE,
+        GL_MAX_VARYING_FLOATS,
+        GL_MAX_VERTEX_ATTRIBS,
+        GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS,
+        GL_MAX_VERTEX_UNIFORM_COMPONENTS,
+        GL_MAX_VIEWPORT_DIMS,
+        GL_STEREO,
+    };
+
+    const char* names[] = {
+        "GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS",
+        "GL_MAX_CUBE_MAP_TEXTURE_SIZE",
+        "GL_MAX_DRAW_BUFFERS",
+        "GL_MAX_FRAGMENT_UNIFORM_COMPONENTS",
+        "GL_MAX_TEXTURE_IMAGE_UNITS",
+        "GL_MAX_TEXTURE_SIZE",
+        "GL_MAX_VARYING_FLOATS",
+        "GL_MAX_VERTEX_ATTRIBS",
+        "GL_MAX_VERTEX_TEXTURE_IMAGE_UNITS",
+        "GL_MAX_VERTEX_UNIFORM_COMPONENTS",
+        "GL_MAX_VIEWPORT_DIMS",
+        "GL_STEREO",
+    };
+        
+    gl_log("GL Context Params:\n");
+    for(int i = 0; i < 10; i++){
+        int v = 0;
+        glGetIntegerv(params[i], &v);
+        gl_log("%s %i\n", names[i], v);
+    }
+
+    int v[2];
+    v[0] = v[1] = 0;
+    glGetIntegerv(params[10], v);
+    gl_log("%s %i %i\n", names[10], v[0], v[1]);
+
+    unsigned char s = 0;
+    glGetBooleanv(params[11], &s);
+    gl_log ("%s %u\n", names[11], (unsigned int)s);
+    gl_log ("-----------------------------\n");
+}
+
 int main(){
     // Assert logging works and initialise log file
     assert(restart_gl_log());
@@ -192,6 +241,7 @@ int main(){
     const GLubyte* version = glGetString(GL_VERSION);
     printf("Renderer: %s\n", renderer);
     printf("OpenGL version supported: %s\n", version);
+    log_gl_params();
 
     // Draw something
     glEnable(GL_DEPTH_TEST);
