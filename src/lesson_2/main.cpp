@@ -283,11 +283,13 @@ int main(){
     // Load Shaders
     GLuint vs = glCreateShader(GL_VERTEX_SHADER);
     const char* vertex_shader = read_shader_program("shaders/test.vert")->c_str();
+    gl_log(vertex_shader);
     glShaderSource(vs, 1, &vertex_shader, NULL);
     glCompileShader(vs);
 
     GLuint fs = glCreateShader(GL_FRAGMENT_SHADER);
     const char* fragment_shader = read_shader_program("shaders/test.frag")->c_str();
+    gl_log(fragment_shader);
     glShaderSource(fs, 1, &fragment_shader, NULL);
     glCompileShader(fs);
 
@@ -296,6 +298,13 @@ int main(){
     glAttachShader(shader_program, vs);
     glAttachShader(shader_program, fs);
     glLinkProgram(shader_program);
+    glUseProgram(shader_program);
+
+    // Obtain the inputColor var from the test.frag
+    GLint colour_loc = glGetUniformLocation(shader_program, "inputColour" );
+
+    // Specify the colour of our fragments
+    glUniform4f(colour_loc, 1.0f, 0.0f, 0.0f, 1.0f);
 
     // Draw loop
     while(!glfwWindowShouldClose(window)){
@@ -308,9 +317,6 @@ int main(){
 
         // Set background color to grey
         glClearColor(0.5, 0.5, 0.5, 1.0);
-
-        // Fillament of the triangle area bound by vertex array
-        glUseProgram(shader_program);
 
         // Specify the bounds and draw
         glBindVertexArray(vao);
