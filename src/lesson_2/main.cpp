@@ -90,7 +90,7 @@ bool gl_log(std::string message, ...){
     return true;
 }
 
-bool gl_log_error(std::string message, ...){
+bool gl_log_error(const char* message, ...){
     // Initialise variable arguments
     va_list arguments;
 
@@ -109,14 +109,14 @@ bool gl_log_error(std::string message, ...){
     va_start(arguments, message);
     vfprintf(
         file,
-        message.c_str(),
+        message,
         arguments
     ); 
 
     // Write to stderr
     vfprintf(
         stderr,
-        message.c_str(),
+        message,
         arguments
     );
 
@@ -208,6 +208,33 @@ void _update_fps_counter(GLFWwindow* window){
     frame_count++;
 }
 
+void _print_shader_info_log(GLuint shader){
+    int max_length = 2048;
+    int actual_length = 0;
+    char log[2048];
+
+    glGetShaderInfoLog(shader, max_length, &actual_length, log);
+    gl_log_error("Shader info log GL index %u:\n%s\n", &shader, &log);
+}
+
+bool check_shader_for_errors(GLuint shader){
+    int params = -1;
+    glGetShaderiv(shader, GL_COMPILE_STATUS, &params);
+
+    if(GL_TRUE != params){
+        fprintf(
+            stderr,
+            "ERROR: Gl shader index %i did not compile\n",
+            shader
+        );
+
+        _print_shader_info_log(shader);
+        return false;
+    }
+
+    return true;
+}
+
 int main(){
     // Assert logging works and initialise log file
     assert(restart_gl_log());
@@ -283,15 +310,15 @@ int main(){
     // Load Shaders
     GLuint vs = glCreateShader(GL_VERTEX_SHADER);
     const char* vertex_shader = read_shader_program("shaders/test.vert")->c_str();
-    gl_log(vertex_shader);
     glShaderSource(vs, 1, &vertex_shader, NULL);
     glCompileShader(vs);
+    check_shader_for_errors(vs);
 
     GLuint fs = glCreateShader(GL_FRAGMENT_SHADER);
     const char* fragment_shader = read_shader_program("shaders/test.frag")->c_str();
-    gl_log(fragment_shader);
     glShaderSource(fs, 1, &fragment_shader, NULL);
     glCompileShader(fs);
+    check_shader_for_errors(fs);
 
     // Combine Shaders into Shader Program
     GLuint shader_program = glCreateProgram();
